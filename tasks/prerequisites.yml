@@ -1,0 +1,9 @@
+---
+# prerequisites for jnlp slave
+- name: Ensure prerequisite packages are present
+  package:
+    state: present
+    name: "{{ item }}"
+    use: auto
+    update_cache: true
+  loop: "{{ prerequisite_packages[ansible_os_family | lower ] }}"

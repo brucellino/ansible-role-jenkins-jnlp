@@ -1,0 +1,15 @@
+---
+- name: ensure epel
+  package:
+    state: present
+    name: epel-release
+    use: auto
+    update_cache: true
+  when: ansible_os_family | lower == 'redhat'
+
+- name: Upgrade all packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+    force_apt_get: true
+  when: ansible_os_family | lower == 'debian'

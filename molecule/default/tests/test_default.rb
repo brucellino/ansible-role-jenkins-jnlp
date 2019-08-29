@@ -7,3 +7,8 @@ describe file('/etc/hosts') do
   its('group') { should eq 'root' }
   its('mode') { should cmp '0644' }
 end
+
+# http://inspec.io/docs/reference/resources/package/
+describe package('openjdk') do
+  it { should be_installed }
+end
