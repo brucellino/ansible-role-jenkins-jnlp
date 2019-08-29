@@ -7,3 +7,22 @@
     use: auto
     update_cache: true
   loop: "{{ prerequisite_packages[ansible_os_family | lower ] }}"
+
+- name: Ensure jenkins group is present
+  group:
+    name: jenkins
+    state: present
+    gid: '1000'
+
+- name: Ensure jenkins user is present
+  user:
+    name: jenkins
+    comment: Jenkins user
+    ssh_key_bits: 2048
+    create_home: true
+    groups: jenkins
+    append: yes
+    uid: '1000'
+    group: '1000'
+    shell: '/bin/bash'
+    state: present

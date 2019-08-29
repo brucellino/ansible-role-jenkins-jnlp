@@ -11,3 +11,4 @@ prerequisite_packages:
     - "@Development Tools"
     - java-11-openjdk
     - java-11-openjdk-headless
+version: 3.29
