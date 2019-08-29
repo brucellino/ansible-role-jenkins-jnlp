@@ -21,8 +21,34 @@
     ssh_key_bits: 2048
     create_home: true
     groups: jenkins
-    append: yes
+    append: true
     uid: '1000'
     group: '1000'
     shell: '/bin/bash'
     state: present
+
+- name: Create run directory
+  file:
+    path: /usr/share/jenkins/
+    group: jenkins
+    state: directory
+    owner: jenkins
+
+- name: Get the slave jnlp
+  get_url:
+    dest: /usr/share/jenkins/slave.jnlp
+    url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ version }}/remoting-{{ version }}.jar"
+    owner: jenkins
+    group: jenkins
+    validate_certs: true
+
+- name: Get the slave startup script
+  get_url:
+    dest: /usr/local/bin/jenkins-slave
+    url: https://raw.githubusercontent.com/jenkinsci/docker-jnlp-slave/master/jenkins-slave
+    backup: true
+    force: false
+    owner: jenkins
+    group: jenkins
+    mode: 0744
+    validate_certs: true
