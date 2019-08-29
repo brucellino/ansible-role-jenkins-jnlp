@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Bruce Becker
+  description: Jenkins JNLP slave
+  company: UEFA DevOps
+  license: MIT
+  min_ansible_version: 2.4
+  platforms:
+  - name: Ubuntu
+    versions:
+      - 18.04
+      - 18.10
+
+  galaxy_tags: []
+dependencies: []
