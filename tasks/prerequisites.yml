@@ -33,13 +33,15 @@
     group: jenkins
     state: directory
     owner: jenkins
+    mode: 0755
 
-- name: Get the slave jnlp
+- name: Get the remoting library
   get_url:
-    dest: /usr/share/jenkins/slave.jnlp
+    dest: /usr/share/jenkins/slave.jar
     url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ version }}/remoting-{{ version }}.jar"
     owner: jenkins
     group: jenkins
+    mode: 0644
     validate_certs: true
 
 - name: Get the slave startup script

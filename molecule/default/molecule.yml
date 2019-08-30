@@ -6,9 +6,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: centos7
-    image: centos:7
-  - name: ubuntu-lts
+  - name: jenkins
     image: ubuntu:18.04
 provisioner:
   name: ansible

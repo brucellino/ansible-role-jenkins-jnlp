@@ -19,6 +19,12 @@ describe user('jenkins') do
   it { should exist }
 end
 
+# http://inspec.io/docs/reference/resources/file/
+describe file('/usr/share/jenkins/slave.jar') do
+  it { should exist }
+  it { should be_owned_by 'jenkins'}
+  its('mode') { should cmp '0644' }
+end
 # # http://inspec.io/docs/reference/resources/package/
 # describe package('openjdk') do
 #   it { should be_installed }
