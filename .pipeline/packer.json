@@ -1,0 +1,31 @@
+{
+  "builders": [
+    {
+      "type": "docker",
+      "image": "ubuntu:18.04",
+      "commit": "true",
+      "changes": [
+        "EXPOSE 50000 5000 443",
+        "ENTRYPOINT [\"jenkins-slave\"]"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": ["apt-get -qq update && apt-get -qq install -y python3 python"]
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "molecule/default/playbook.yml",
+      "ansible_env_vars": ["ANSIBLE_ROLES_PATH=../"]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "quay.io/uefadevops/jenkins-agent-jnlp",
+      "tag": "latest"
+    }
+  ]
+}
