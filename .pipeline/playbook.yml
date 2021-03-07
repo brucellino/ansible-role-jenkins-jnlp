@@ -1,0 +1,10 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - raw: apt-get -qqq update ; apt-get install -qqq python3 python-pip
+- name: Converge
+  hosts: all
+  roles:
+    - role: ansible-role-jenkins-jnlp

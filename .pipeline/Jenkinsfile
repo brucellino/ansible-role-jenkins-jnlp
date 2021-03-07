@@ -1,0 +1,28 @@
+// Jenkinsfile for default builder
+
+pipeline {
+  agent none
+  options{
+    skipDefaultCheckout true
+  }
+  stages {
+    stage('Lint') {
+      agent { label 'ecs' }
+      steps {
+        echo "Not Implemented yet"
+      }
+    }
+    stage('Converge and Verify') {
+      agent { label 'ecs' }
+      steps {
+        echo "Not Implemented Yet"
+      }
+    }
+    stage('Release') {
+      agent { label 'ecs' }
+      steps {
+        echo "Not Implemented Yet"
+      }
+    }
+  }
+}
