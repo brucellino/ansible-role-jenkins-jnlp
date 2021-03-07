@@ -48,3 +48,11 @@ def test_curl(host):
     """
 
     assert host.exists("curl")
+
+
+def test_pip3(host):
+    """
+    Ensure that pip3 is on our path
+    """
+
+    assert host.exists("pip3")
