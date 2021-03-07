@@ -35,6 +35,16 @@ def test_agent(host):
     start_script = host.file("/usr/local/bin/jenkins-agent")
 
     assert agent_jar.exists
-    assert agent_jar.mode == "0644"
+    assert agent_jar.mode == 420
     assert agent_jar.user == "root"
     assert agent_jar.group == "root"
+
+    assert host.exists("jenkins-agent")
+
+
+def test_curl(host):
+    """
+    Ensure that we have access to curl so that we can get tools if we need to
+    """
+
+    assert host.exists("curl")
