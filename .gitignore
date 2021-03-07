@@ -136,3 +136,5 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+.pipeline/ansible-default.cfg
+.pipeline/inventory-default.ini
