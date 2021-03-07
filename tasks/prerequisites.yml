@@ -1,5 +1,5 @@
 ---
-# prerequisites for jnlp slave
+# prerequisites for inbound agent
 - name: Ensure prerequisite packages are present
   package:
     state: present
@@ -37,20 +37,26 @@
 
 - name: Get the remoting library
   get_url:
-    dest: /usr/share/jenkins/slave.jar
+    dest: /usr/share/jenkins/agent.jar
     url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ version }}/remoting-{{ version }}.jar"
-    owner: jenkins
-    group: jenkins
+    owner: root
+    group: root
     mode: 0644
     validate_certs: true
 
-- name: Get the slave startup script
+- name: Get the agent startup script
   get_url:
-    dest: /usr/local/bin/jenkins-slave
-    url: https://raw.githubusercontent.com/jenkinsci/docker-jnlp-slave/master/jenkins-slave
+    dest: /usr/local/bin/jenkins-agent
+    url: https://raw.githubusercontent.com/jenkinsci/docker-inbound-agent/master/jenkins-agent
     backup: true
     force: false
     owner: jenkins
     group: jenkins
     mode: 0744
     validate_certs: true
+
+- name: Set up alias to the bad word
+  file:
+    path: /usr/local/bin/jenkins-slave
+    state: link
+    src: /usr/local/bin/jenkins-agent

@@ -1,11 +1,9 @@
 ---
-- name: ensure epel
+- name: Ensure python2 is removed
   package:
-    state: present
-    name: epel-release
-    use: auto
-    update_cache: true
-  when: ansible_os_family | lower == 'redhat'
+    name: python
+    state: absent
+    autoremove: true
 
 - name: Upgrade all packages to the latest version
   apt:

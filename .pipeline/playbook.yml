@@ -1,10 +1,18 @@
 ---
 - name: Prepare
-  hosts: all
+  hosts: default
   gather_facts: false
   tasks:
     - raw: apt-get -qqq update ; apt-get install -qqq python3 python-pip
 - name: Converge
   hosts: all
+  become: true
   roles:
     - role: ansible-role-jenkins-jnlp
+  post_tasks:
+    - name: clean up apt
+      become: true
+      apt:
+        autoremove: true
+        autoclean: true
+        update_cache: false

@@ -1,31 +1,70 @@
 {
+  "variables": {
+    "version": "{{ env `VERSION` }}",
+    "registry_username": "uefadevops+quaybot",
+    "registry_password": "{{ vault `/kv/data/quay` `password` }}"
+  },
   "builders": [
     {
       "type": "docker",
-      "image": "ubuntu:18.04",
+      "run_command": [
+        "-d",
+        "-i",
+        "-t",
+        "--name",
+        "test_agent",
+        "{{.Image}}",
+        "/bin/bash"
+      ],
+      "image": "jenkins/inbound-agent:latest-jdk11",
       "commit": "true",
+      "exec_user": "root",
       "changes": [
+        "USER jenkins",
+        "LABEL version={{ user `version` }}",
+        "LABEL team=devops",
         "EXPOSE 50000 5000 443",
-        "ENTRYPOINT [\"jenkins-slave\"]"
+        "ENTRYPOINT [\"jenkins-agent\"]"
       ]
     }
   ],
   "provisioners": [
     {
-      "type": "shell",
-      "inline": ["apt-get -qq update && apt-get -qq install -y python3 python"]
+      "type": "ansible",
+      "user": "root",
+      "playbook_file": "playbook.yml",
+      "groups": ["docker"],
+      "extra_arguments": ["-e", "ansible_host=test_agent"],
+      "ansible_env_vars": [
+        "ANSIBLE_ROLES_PATH=../../",
+        "ANSIBLE_PYTHON_INTERPRETER=python3",
+        "ANSIBLE_TRANSPORT=docker"
+      ]
     },
     {
-      "type": "ansible",
-      "playbook_file": "molecule/default/playbook.yml",
-      "ansible_env_vars": ["ANSIBLE_ROLES_PATH=../"]
+      "type": "shell-local",
+      "inline": ["pytest --hosts=\"docker://root@test_agent\" test_user.py"]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin",
+        "trivy fs --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed /",
+        "rm -rf /usr/local/bin/trivy /root/.cache /root/.ansible"
+      ]
     }
   ],
-  "post-processors": [
+  "post-processors": [[
     {
       "type": "docker-tag",
       "repository": "quay.io/uefadevops/jenkins-agent-jnlp",
-      "tag": "latest"
+      "tag": "{{ user `version`}}"
+    },
+    {
+      "type": "docker-push",
+      "login_username": "{{ user `registry_username` }}",
+      "login_password": "{{ user `registry_password` }}",
+      "login_server": "quay.io"
     }
-  ]
+  ]]
 }

@@ -27,6 +27,15 @@ def test_jenkins_home(host):
     assert jenkins_home.mode == 493
 
 
+def test_java(host):
+    """
+    Ensure that the JVM is present and is jdk 11
+    """
+
+    assert host.exists("java")
+    assert host.package("openjdk-11-jre-headless").is_installed
+
+
 def test_agent(host):
     """
     Ensure that the agent startup script is present and properly configured
