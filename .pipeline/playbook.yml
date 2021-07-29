@@ -1,17 +1,47 @@
 ---
-- name: Prepare
-  hosts: default
+- name: Prepare Inventory
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create test container
+      docker_container:
+        image: jenkins/inbound-agent:latest-jdk11
+        name: jenkins_agent
+        auto_remove: True
+        cleanup: True
+        entrypoint: /bin/bash
+        command: -c "sleep infinity"
+        # Add the palo dns servers for VPN, as well as public DNS servers
+        dns_servers: 172.18.107.254,172.18.102.254,8.8.8.8
+        interactive: True
+        keep_volumes: False
+        pull: true
+        state: started
+        user: root
+    - name: Add agent to inventory
+      add_host:
+        name: jenkins_agent
+        groups:
+          - jenkins_agents
+          - docker
+        ansible_connection: docker
+        ansible_user: root
+
+- name: Prepare container
+  hosts: jenkins_agents
   gather_facts: false
   tasks:
-    - raw: apt-get -qqq update ; apt-get install -qqq python3 python-pip
+    - name: Add python3
+      raw: "python3 --version || apt-get update -qq ; apt-get install -y python3-minimal"
+      changed_when: false
+
+
 - name: Converge
-  hosts: all
-  become: true
+  hosts: jenkins_agents
   roles:
     - role: ansible-role-jenkins-jnlp
   post_tasks:
     - name: clean up apt
-      become: true
       apt:
         autoremove: true
         autoclean: true

@@ -27,6 +27,25 @@
     shell: '/bin/bash'
     state: present
 
+- name: Ensure Jenkins SSH directory is present
+  file:
+    path: /home/jenkins/.ssh
+    state: directory
+    recurse: True
+    mode: 0755
+    owner: jenkins
+    group: jenkins
+
+- name: Create SSH config for jenkins user
+  copy:
+    dest: /home/jenkins/.ssh/config
+    src:  home/jenkins/.ssh/config
+    backup: True
+    mode: 0644
+    directory_mode: True
+    owner: jenkins
+    group: jenkins
+
 - name: Create run directory
   file:
     path: /usr/share/jenkins/
@@ -44,18 +63,17 @@
     mode: 0644
     validate_certs: true
 
-- name: Get the agent startup script
-  get_url:
+- name: Copy agent start script
+  copy:
     dest: /usr/local/bin/jenkins-agent
-    url: https://raw.githubusercontent.com/jenkinsci/docker-inbound-agent/master/jenkins-agent
+    src: usr/local/bin/jenkins-agent
     backup: true
-    force: false
     owner: jenkins
     group: jenkins
     mode: 0744
-    validate_certs: true
+    force: True
 
-- name: Set up alias to the bad word
+- name: 🖤
   file:
     path: /usr/local/bin/jenkins-slave
     state: link

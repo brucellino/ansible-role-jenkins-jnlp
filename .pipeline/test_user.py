@@ -33,7 +33,8 @@ def test_java(host):
     """
 
     assert host.exists("java")
-    assert host.package("openjdk-11-jre-headless").is_installed
+    assert "11" in host.run("java -version").stderr
+    # assert host.package("openjdk-11-jre-headless").is_installed
 
 
 def test_agent(host):
@@ -65,3 +66,13 @@ def test_pip3(host):
     """
 
     assert host.exists("pip3")
+
+
+def test_git(host):
+    """Ensure that git is on our path"""
+    assert host.exists("git")
+
+
+def test_vault(host):
+    """Ensure that Vault is on our path"""
+    assert host.exists("vault")

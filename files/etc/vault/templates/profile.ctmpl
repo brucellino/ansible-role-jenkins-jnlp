@@ -1,0 +1,5 @@
+{{ with secret "aws/infra/creds/deploy" }}
+[uefa-infra]
+aws_access_key_id = {{ .Data.access_key }}
+aws_secret_access_key = {{ .Data.secret_key }}
+{{ end }}
