@@ -1,5 +1,7 @@
 ---
 galaxy_info:
+  role_name: jenkins_jnlp
+  namespace: uefa_devops
   author: Bruce Becker
   description: Jenkins JNLP slave
   company: UEFA DevOps
